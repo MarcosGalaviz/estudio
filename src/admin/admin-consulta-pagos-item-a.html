@@ -1,0 +1,29 @@
+
+<dom-module id="admin-consulta-pagos-item-a">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }           
+
+            .dropdownColor{
+                color:dimgrey;
+            }
+
+        </style>
+
+        <paper-checkbox checked="{{pagado}}">Pagado</paper-checkbox>
+        {{pagado}}
+
+    </template>
+    <script>
+        Polymer({
+            is: 'admin-consulta-pagos-item-a',
+
+            properties: {
+               pagado:Boolean
+            },
+        });
+    </script>
+</dom-module>

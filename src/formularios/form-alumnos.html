@@ -1,0 +1,54 @@
+
+<dom-module id="form-alumnos">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }           
+
+            .dropdownColor{
+                color:dimgrey;
+            }
+
+        </style>
+
+        <paper-input label="Nombre red social" value="{{usuario.nombre}}" disabled></paper-input>
+        <paper-input label="E-mail" value="{{usuario.email}}" disabled></paper-input> 
+        <paper-input label="Nombre Interno" value="{{usuario.nombreinterno}}"></paper-input>              
+        <paper-dropdown-menu label="Nivel" value="{{usuario.nivel}}">
+            <paper-listbox class="dropdownColor dropdown-content" selected="{{usuario.nivel}}" attr-for-selected="value">
+                <paper-item value="Basico">Basico</paper-item>
+                <paper-item value="Intermedio">Intermedio</paper-item>
+                <paper-item value="Avanzado">Avanzado</paper-item>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+        <div style="margin-top:18px;">
+            <span>Estado:  </span><paper-checkbox checked="{{usuario.activo}}">Activo</paper-checkbox>
+        </div>
+        <!--<paper-textarea label="Estatus" value="{{usuario.status}}"></paper-textarea>-->
+
+    </template>
+    <script>
+        Polymer({
+            is: 'form-alumnos',
+
+            properties: {
+                usuario: {
+                    type: Object,
+                    notify: true,
+                    value: function () {
+                        return {
+                            nombre: '',
+                            email: '',
+                            activo: '',
+                            nombreinterno: '',
+                            nivel:''
+                        }
+                    }
+                }
+            },
+        });
+    </script>
+</dom-module>

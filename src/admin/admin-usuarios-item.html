@@ -1,0 +1,38 @@
+<dom-module id="admin-usuarios-item">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+        <style>
+           
+        </style>
+  
+        <paper-icon-item>
+            <iron-icon icon="label" item-icon></iron-icon>
+            <paper-item-body>
+                <span>[[usuario.nombre]]   </span>
+                <!--<span secondary>[[usuario.email]]</span>-->
+                <paper-checkbox checked="{{usuario.activo}}">Activo</paper-checkbox>
+            </paper-item-body>
+            <paper-icon-button icon="create" on-tap="editarusuario"></paper-icon-button>
+            <paper-icon-button icon="attach-money" on-tap="pagarmes"></paper-icon-button>
+        </paper-icon-item>
+
+    </template>
+    <script>
+    Polymer({
+        is: 'admin-usuarios-item',
+      
+      properties: {
+          usuario: Object,
+      },
+
+      editarusuario: function () {
+          this.fire('editar-usuario', this.usuario);
+      },
+  
+        pagarmes: function () {
+        this.fire('pagar-usuario', this.usuario);
+    }
+
+    });
+    </script>
+</dom-module>

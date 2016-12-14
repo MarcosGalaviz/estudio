@@ -1,0 +1,109 @@
+<link rel="import" href="../utils/underscore-element.html">
+<link rel="import" href="../behaviors/dialogo-behavior.html">
+<link rel="import" href="../behaviors/emisor-feedback-behavior.html">
+<link rel="import" href="../behaviors/firebase-behavior.html">
+<link rel="import" href="../formularios/form-alumnos.html">
+
+<dom-module id="admin-usuarios-pagar">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+
+        <firebase-query app-name="sangrelatina"
+        path="/usuarioPago/{{usuario.$key}}"
+        data="{{pagados}}"
+        order-by-child="year_mes">
+        </firebase-query>
+
+        <style>
+            .dropdownColor {
+                color: dimgrey;
+            }
+        </style>
+        <paper-dialog id="dialogo">
+            <h3>Pagando mensualidad de Usuario</h3>
+            <paper-dialog-scrollable>
+                <!--<form-alumnos usuario="{{usuario}}"></form-alumnos>-->
+
+                <paper-dropdown-menu label="Año" id="year" value="{{year}}">
+                    <paper-listbox class="dropdownColor dropdown-content">
+                        <paper-item value="2016">2016</paper-item>
+                        <paper-item value="2017">2017</paper-item>
+                        <paper-item value="2018">2018</paper-item>
+                        <paper-item value="2019">2019</paper-item>
+                        <paper-item value="2020">2020</paper-item>
+                        <paper-item value="2021">2021</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+
+                <paper-dropdown-menu label="Mes" id="mes" value="{{mes}}">
+                    <paper-listbox class="dropdownColor dropdown-content">
+                        <paper-item>01</paper-item>
+                        <paper-item>02</paper-item>
+                        <paper-item>03</paper-item>
+                        <paper-item>04</paper-item>
+                        <paper-item>05</paper-item>
+                        <paper-item>06</paper-item>
+                        <paper-item>07</paper-item>
+                        <paper-item>08</paper-item>
+                        <paper-item>09</paper-item>
+                        <paper-item>10</paper-item>
+                        <paper-item>11</paper-item>
+                        <paper-item>12</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+            </paper-dialog-scrollable>
+            <div>
+                <paper-button on-tap="close">Cancelar</paper-button>
+                <paper-button on-tap="pagar">Pagar</paper-button>
+            </div>
+
+            <template is="dom-repeat" items="{{pagados}}" as="pago">
+                <p style="color:red">Pago : {{pago.year_mes}} </p>
+            </template>
+        </paper-dialog>
+    </template>
+    <script>
+        Polymer({
+            is: 'admin-usuarios-pagar',
+
+            behaviors: [DialogoBehavior, EmisorFeedbackBehavior, FirebaseBehavior],
+
+            properties: {
+                usuario: Object,
+                year: String,
+                mes: String,
+                properties: {
+                    pagados: Array
+                },
+            },
+
+            pagar: function () {
+                console.log('Entrando a funcion pagar')
+                var refUsuario = this.fbref(this.fb__usuarioPago(this.usuario.$key));
+                var refNuevoMes = refUsuario.push();
+
+                refNuevoMes.set({ year_mes: this.year + '_' + this.mes })
+                .then(this.datosPagados.bind(this))
+                .catch(this.errorPago.bind(this))
+
+                //Afecto el documento de mes y año:
+                var refmes = this.fbref(this.fb__yearmes(this.year + '_' + this.mes));
+
+                //var refNuevoPagoMensual = refmes.push();
+                //refNuevoPagoMensual.set({ user: this.usuario.$key, nombre: this.usuario.nombre })
+                refmes.child(this.usuario.$key).set({ user: this.usuario.$key, nombre: this.usuario.nombre })
+                .then(this.datosPagados.bind(this))
+                .catch(this.errorPago.bind(this))
+            },
+
+            datosPagados: function () {
+                this.feedbackPositivo('Pago Aplicado');
+                this.close();
+            },
+
+            errorPago: function () {
+                this.feedbackNegativo('Error en el Pago')
+            }
+        });
+    </script>
+</dom-module>

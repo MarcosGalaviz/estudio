@@ -1,0 +1,38 @@
+<script>
+/**
+ * Ese componente asume que tenemos un elemento #dialog (Un elemento de la página tiene el id="dialogo") 
+ */
+FirebaseBehavior = {
+  properties: {
+    fbapp: {
+      type: Object,
+      value: function() {
+        return document.createElement('iron-meta').byKey('fbapp');
+      }
+    }
+  },
+
+  fbref: function(ruta) {
+    return this.fbapp.database().ref(ruta);
+  },
+
+  fb__usuariosAll: function() {
+    return '/users'
+  },
+
+  fb__usuariosOne: function(id) {
+      return this.fb__usuariosAll() + '/' + id;
+  },
+  
+  fb__usuarioPago: function (id) {
+      return '/usuarioPago' + '/' + id;
+  },
+
+    fb__yearmes: function(mes){
+        return '/yearmes' + '/' + mes;
+}
+
+
+
+};
+</script>

@@ -1,0 +1,55 @@
+
+<link rel="import" href="../utils/underscore-element.html">
+<link rel="import" href="../behaviors/dialogo-behavior.html">
+<link rel="import" href="../behaviors/emisor-feedback-behavior.html">
+<link rel="import" href="../behaviors/firebase-behavior.html">
+<link rel="import" href="../formularios/form-alumnos.html">
+
+<dom-module id="admin-usuarios-editar">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+        <style>
+           
+        </style>
+        <paper-dialog id="dialogo">
+            <h3>Editando Usuario</h3>
+            <paper-dialog-scrollable>
+                <form-alumnos usuario="{{usuario}}"></form-alumnos>
+            </paper-dialog-scrollable>
+            <div>
+                <paper-button on-tap="close">Cancelar</paper-button>
+                <paper-button on-tap="editar">Guardar</paper-button>
+            </div>
+
+        </paper-dialog>     
+    </template>
+    <script>
+    Polymer({
+        is: 'admin-usuarios-editar',
+      
+        behaviors: [DialogoBehavior, EmisorFeedbackBehavior, FirebaseBehavior],
+
+      properties: {
+          usuario:Object
+      },
+  
+      editar: function () {
+          console.log('Entrando a funcion editar')
+          var refUsuario = this.fbref(this.fb__usuariosOne(this.usuario.$key));
+          var usuarioSinKey = _.omit(this.usuario, '$key');
+          refUsuario.set(usuarioSinKey)
+          .then(this.datosEditados.bind(this))
+          .catch(this.errorEdicion.bind(this))
+      },
+
+      datosEditados: function () {
+          this.feedbackPositivo('Dato editado');
+          this.close();
+      },
+
+      errorEdicion: function () {
+          this.feedbackNegativo('Error edición')
+      }
+    });
+    </script>
+</dom-module>

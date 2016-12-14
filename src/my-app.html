@@ -1,0 +1,281 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="my-icons.html">
+
+<!--firebase-->
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html" />
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html" />
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html" />
+
+<!--paper-->
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+
+<!--neon-->
+<link rel="import" href="../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-down-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-down-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/animations/hero-animation.html">
+
+<!--iron-->
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../bower_components/iron-meta/iron-meta.html">
+
+<!--componentes-->
+<link rel="import" href="login/nut-login.html">
+<link rel="import" href="admin/admin-usuarios.html">
+
+<link rel="import" href="estilos.html">
+<link rel="import" href="styles/shared-styles.html">
+<dom-module id="my-app">
+    <link rel="import" href="estilos.css" type="css">
+  <template>
+
+      <firebase-app name="sangrelatina"
+                    api-key="AIzaSyCcc1__I7sCPQKfVhEVeCwueyEgnQfbuL0"
+                    auth-domain="sangrelatina-442ac.firebaseapp.com"
+                    database-url="https://sangrelatina-442ac.firebaseio.com"
+                    app="{{fbapp}}">
+      </firebase-app>
+      <firebase-auth id="auth"
+                     app-name="sangrelatina"
+                     provider="{{proveedor}}"
+                     signed-in="{{signedIn}}"
+                     user="{{user}}">
+      </firebase-auth>
+      <iron-meta key="fbapp" value="[[fbapp]]"></iron-meta>
+
+    <style>
+
+      :host {
+        display: block;
+        /*--app-primary-color: #212121;
+        --app-secondary-color: black;*/
+      }
+
+      app-drawer {
+      --app-drawer-content-container: {
+        background-color: var(--paper-toolbar-background);
+      }
+    }
+
+      app-header {
+        /*background-color: var(--app-primary-color);*/
+        /*color: #fff;*/
+      }
+      app-header paper-icon-button {
+        /*--paper-icon-button-ink-color: white;*/
+      }
+
+      .drawer-list {
+        margin: 0 20px;
+        
+      }
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        line-height: 40px;
+        text-decoration: none;
+        /*background-color:var(--paper-toolbar-background);
+        color:black;*/
+      }
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      .drawer-list a.subroute {
+        padding-left: 32px;
+      }
+           app-toolbar{
+       background-color:var(--paper-toolbar-background);
+   }
+
+            [hidden] {
+                display: none;
+            }
+
+    </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <app-drawer-layout fullbleed force-narrow>
+
+      <!-- Drawer content -->
+      <app-drawer>
+        <app-toolbar>Menu</app-toolbar>
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+          <a name="view1" href="/view1">View One</a>
+          <a name="view2" href="/view2">View Two</a>
+          <a name="view3" href="/view3">View Three</a>
+            <a name="textos" href="/textos">Textos</a>
+        </iron-selector>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+
+        <app-header condenses reveals effects="waterfall">
+          <app-toolbar class="app-toolbar">
+            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <div title>My App</div>
+              <nut-login on-sign-in="signIn"
+                         signed-in="[[signedIn]]"
+                         on-sign-out="signOut"
+                         proveedor="{{proveedor}}"
+                         logueado="{{logueado}}">
+              </nut-login>
+              <paper-icon-button icon="exit-to-app" on-tap="salir" hidden="{{!logueado}}"></paper-icon-button>
+          </app-toolbar>
+        </app-header>
+
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+          <my-view1 name="view1"></my-view1>
+          <my-view2 name="view2"></my-view2>
+          <my-view3 name="view3"></my-view3>
+            <my-textos name="textos"></my-textos>
+          </iron-pages>
+
+      </app-header-layout>
+
+    </app-drawer-layout>
+      <paper-toast id="eltoast"></paper-toast>
+      <paper-toast id="eltoastnegativo"></paper-toast>
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'my-app',
+
+
+      behaviors: [FirebaseBehavior],
+
+      listeners: {        
+          'feedback-positivo': 'feedbackPositivo',
+          'feedback-negativo': 'feedbackNegativo',
+      },
+
+      properties: {
+
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        },
+        logueado: {
+            type: Boolean,
+            value: false
+        },
+
+        user: Object,
+        fbapp: Object,
+
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+
+      _routePageChanged: function(page) {
+        this.page = page || 'view1';
+      },
+
+      _pageChanged: function(page) {
+        // load page import on demand.
+        this.importHref(
+          this.resolveUrl('my-' + page + '.html'), null, null, true);
+      },
+
+      signIn: function () {
+          var that = this;
+          this.$.auth.signInWithPopup()
+          .then(function (res) {
+              that.fire('feedback-positivo', 'Has iniciado sesión');
+              that.saveProfile(res.user);
+          })
+          .catch(function (error) {
+              console.log('Error', error.message, error.code);
+          });
+      },
+
+      saveProfile: function (user) {
+          var that = this;
+          var usuariocreado = this.fbref('/users/' + user.uid);
+          // Esto lo hago para que si el usuario ya existe no se guarde otra vez sus valores y no reemplazarlo.
+          usuariocreado.once("value", function (snapshot) {
+              var a = snapshot.exists();
+              //console.log('existe' + a);
+              if (a === false) {
+                  that.fbapp.database().ref('/users/' + user.uid).set({
+                      nombre: user.displayName,
+                      email: user.email,
+                      photoURL: user.photoURL
+                  })
+                  .then(function () {
+                      console.log('perfil guardado')
+                  })
+                  .catch(function () {
+                      console.log('no he podido.... perfil')
+                  })
+              } else {
+                  console.log('El usuario ya existe sin cambios')
+              }
+          });
+      },
+
+      salir: function () {
+          that = this;
+          console.log("Saliendo")
+          this.$.auth.signOut();
+          this.logueado = false;
+          that.fire('feedback-positivo', 'Adios, Regresa Pronto');
+      },
+
+      feedbackPositivo: function (e, data) {
+          this.$.eltoast.text = data;
+          this.$.eltoast.open();
+      },
+
+    });
+
+  </script>
+
+</dom-module>

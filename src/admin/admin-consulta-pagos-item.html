@@ -1,0 +1,101 @@
+
+<dom-module id="admin-consulta-pagos-item">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+        <style>
+
+        </style>
+        <paper-icon-item>
+            <iron-icon icon="label" item-icon></iron-icon>
+            <paper-item-body>
+                <span>[[usuario.nombre]]</span>
+                <paper-checkbox checked="{{usuario.activo}}">Activo</paper-checkbox>
+                <paper-checkbox checked="{{pagado}}" id="check">Pagado</paper-checkbox><div>
+                    <!--<admin-consulta-pagos-item-a id="item"></admin-consulta-pagos-item-a>-->
+                </div>
+            </paper-item-body>
+        </paper-icon-item>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'admin-consulta-pagos-item',
+            behaviors: [FirebaseBehavior],
+            properties: {
+                usuario: Object,
+                yearmes: {
+                    type: String,
+                    observer: '_yearmes'
+                },
+
+                pagado: {
+                    type: Boolean,
+                }
+            },
+
+            _yearmes: function () {
+                this.consultar();
+                console.log('cambio el mes...')
+            },
+
+            consultar: function () {
+                that = this;
+                var x = Boolean
+                var postElement = 'hi';
+                var usuariocreado = this.fbref('/yearmes/' + this.yearmes + '/' + this.usuario.$key);
+
+                usuariocreado.on('value', function (snapshot) {
+                    updateStarCount(postElement, snapshot.val());
+                });
+
+                function updateStarCount(postElement, b) {                    
+                    if (b) {
+                        //that.pagado = true;
+                        //that.$.check.checked = true;
+                        x = true;
+                        console.log('valor de b en true : ' + b + 'pagado: ' + that.pagado)
+                    } else {
+                        that.pagado = false;
+                        x = false;
+                        console.log('valor de b en false : ' + b + 'pagado: ' + that.pagado)
+                    }
+                }
+
+                //usuariocreado.once('value')
+                //.then(function (snapshot) {
+                //    var a = snapshot.exists();
+                //    console.log('existe en BD: ' + a);
+                //    if (a) {
+                //        console.log('El usuario PAGO: ' + a)
+                //        //that.pagado = true;
+                //        x = true;
+                //    } else {
+                //        //that.pagado = false;
+                //        x = false;
+                //    }
+                   
+                //});
+                this.prueba(x);
+            },
+
+            //updateStarCount: function(a,b){
+            //    console.log('hola'+ a )
+            //},
+
+            prueba: function (x) {
+                this.pagado = x;
+                console.log('Probando: ')
+                //this.$.item.pagado = a;
+                //if (a) {
+                //    this.pagado = true;
+                //} else {
+                //    this.pagado = false;
+                //}
+            },
+            //attached: function () {
+            //    this.consultar();
+            //}
+
+        });
+    </script>
+</dom-module>

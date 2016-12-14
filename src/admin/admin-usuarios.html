@@ -1,0 +1,62 @@
+<link rel="import" href="admin-usuarios-item.html">
+<link rel="import" href="admin-usuarios-editar.html">
+<link rel="import" href="admin-usuarios-pagar.html">
+<link rel="import" href="../behaviors/dialogo-behavior.html">
+<link rel="import" href="../behaviors/emisor-feedback-behavior.html">
+<link rel="import" href="../behaviors/firebase-behavior.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+
+<dom-module id="admin-usuarios">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+        <style>
+             :host {
+        display: block;
+        padding: 10px;
+      }
+        </style>
+  
+        <firebase-query
+                        app-name="sangrelatina"
+                        path="/users"
+                        data="{{usuarios}}">
+        </firebase-query>
+
+        <template is="dom-repeat" items="{{usuarios}}" as="usuario">
+            <admin-usuarios-item usuario="{{usuario}}"></admin-usuarios-item>
+        </template>
+
+        <admin-usuarios-editar id="editausuario"></admin-usuarios-editar>
+
+        <admin-usuarios-pagar id="pagausuario"></admin-usuarios-pagar>
+
+    </template>
+    <script>
+    Polymer({
+        is: 'admin-usuarios',
+      
+      properties: {
+          usuarios: Array
+      },
+
+      listeners: {
+          'editar-usuario': 'editarUsuario',
+          'pagar-usuario': 'pagarUsuario'
+      },
+  
+        editarUsuario:function(e, data){
+            console.log('editando Usuario...')
+            this.$.editausuario.usuario = data;
+            this.$.editausuario.open();
+        },
+
+        pagarUsuario:function(e, data){
+            console.log('Pagando Usuario...')
+            this.$.pagausuario.usuario = data;
+            this.$.pagausuario.open();
+        }
+
+    });
+    </script>
+</dom-module>

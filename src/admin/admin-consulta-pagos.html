@@ -1,0 +1,89 @@
+
+<link rel="import" href="../utils/underscore-element.html">
+<link rel="import" href="../behaviors/dialogo-behavior.html">
+<link rel="import" href="../behaviors/emisor-feedback-behavior.html">
+<link rel="import" href="../behaviors/firebase-behavior.html">
+<link rel="import" href="../formularios/form-alumnos.html">
+<link rel="import" href="admin-consulta-pagos-item.html">
+<link rel="import" href="admin-consulta-pagos-item-a.html">
+
+<dom-module id="admin-consulta-pagos">
+    <link rel="import" href="../estilos.css" type="css">
+    <template>
+        <firebase-query app-name="sangrelatina"
+                        path="/users"
+                        data="{{usuarios}}">
+        </firebase-query>
+
+        <style>
+            .dropdownColor {
+                color: dimgrey;
+            }
+        </style>
+
+        <h3>Consulta de pagos mensuales</h3>
+        <paper-dropdown-menu label="Año" id="year" value="{{year}}">
+            <paper-listbox class="dropdownColor dropdown-content">
+                <paper-item value="2016">2016</paper-item>
+                <paper-item value="2017">2017</paper-item>
+                <paper-item value="2018">2018</paper-item>
+                <paper-item value="2019">2019</paper-item>
+                <paper-item value="2020">2020</paper-item>
+                <paper-item value="2021">2021</paper-item>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+        <paper-dropdown-menu label="Mes" id="mes" value="{{mes}}">
+            <paper-listbox class="dropdownColor dropdown-content">
+                <paper-item>01</paper-item>
+                <paper-item>02</paper-item>
+                <paper-item>03</paper-item>
+                <paper-item>04</paper-item>
+                <paper-item>05</paper-item>
+                <paper-item>06</paper-item>
+                <paper-item>07</paper-item>
+                <paper-item>08</paper-item>
+                <paper-item>09</paper-item>
+                <paper-item>10</paper-item>
+                <paper-item>11</paper-item>
+                <paper-item>12</paper-item>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+        <template is="dom-repeat" items="{{usuarios}}" as="usuario">         
+            <admin-consulta-pagos-item usuario="{{usuario}}" yearmes="{{yearmes}}" id="consultaspagos"></admin-consulta-pagos-item>
+        </template>
+
+        <paper-button on-tap="consultarpagos">Consultar</paper-button>
+
+   </template>
+    <script>
+        Polymer({
+            is: 'admin-consulta-pagos',
+
+            behaviors: [DialogoBehavior, EmisorFeedbackBehavior, FirebaseBehavior],
+
+            properties: {
+                usuario: Object,
+                year: String,
+                mes: String,             
+                yearmes: {
+                    type: String,
+                    //value: '2016_12'
+                    //computed: 'computedyearmes(year, mes)'
+                }
+            },
+
+            computedyearmes: function (year, mes) {
+                return year + '_' + mes;
+            },
+
+            consultarpagos: function () {
+                this.yearmes = this.year + '_' + this.mes;
+                //this.$.consultaspagos.consultar();
+                //this.$.consultaspagos.yearmes = this.year + '_' + this.mes;
+            }
+
+        });
+    </script>
+</dom-module>

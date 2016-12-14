@@ -1,0 +1,166 @@
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="nut-login">
+    <template>
+        <style>
+            :host {
+                /*position: absolute;
+                top: 46px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--paper-purple-500);
+                transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1;
+                color: var(--paper-purple-50);
+*/
+                @apply(--layout);
+                @apply(--layout-center-center);
+            }
+
+            :host([signed-in]) {
+                /*opacity: 0;
+                pointer-events: none;
+                display:none;*/
+            }
+
+            paper-button > * {
+                vertical-align: middle;
+                text-transform: none;
+            }
+
+                 paper-button.google {                
+                background-color:#D50F25;
+                color: white;             
+              }
+
+               paper-button.facebook {                
+                background-color:#3b5998;
+                color: white;               
+              }
+             [hidden] {display: none}
+
+        </style>
+        <paper-icon-button icon="account-circle" on-tap="abrirDrop" hidden="{{logueado}}"></paper-icon-button>
+       
+        <iron-dropdown horizontal-align="right"
+                       vertical-align="top"
+                       vertical-offset="40"
+                       id="dropd"
+                       open-animation-config="[[animacionEntrada]]"
+                       close-animation-config="[[animacionSalida]]">
+            <div class="dropdown-content">
+
+                <paper-card heading="Ingrese con su cuenta">
+                    <div class="card-content">
+                        <paper-button raised class="google" on-tap="entergoogle" disabled="[[disabled]]">
+                            <iron-icon icon="account-circle"></iron-icon>
+                            <span>Entar con Google</span>
+                        </paper-button>
+
+                        <paper-button raised class="facebook" on-tap="enterface" disabled="[[disabled]]">
+                            <iron-icon icon="account-circle"></iron-icon>
+                            <span>Entrar con Facebook</span>
+                        </paper-button>
+                    </div>
+                   
+                </paper-card>
+                <!--<paper-button raised on-tap="loguearse">Loguearse con Google</paper-button>-->             
+            </div>
+        </iron-dropdown>
+    
+    </template>
+    <script>
+    Polymer({
+      is: 'nut-login',
+      
+      properties: {
+        disabled: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        logueado: {
+            type: Boolean,
+            value: false,
+            notify: true
+        },
+
+        signedIn: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        proveedor: {
+            type: String,
+            value: "facebook",
+            notify:true
+            //reflectToAttribute: true
+        },
+
+        animacionEntrada: {
+            type: Array,
+            value: function () {
+                return [
+                  {
+                      name: 'fade-in-animation',
+                      timing: {
+                          duration: 3000
+                      }
+                  }
+                ]
+            }
+        },
+      },
+      animacionSalida: {
+          type: Array,
+          value: function() {
+              return [
+                {
+                    name: 'fade-out-animation',
+                    timing: {
+                        duration: 3000,
+                        delay: 3000
+                    }
+                },
+                {
+                    name: 'slide-down-animation',
+                    timing: {
+                        duration: 6000
+                    }
+                },
+              ]
+          }
+      },
+
+      entergoogle: function(){
+          this.proveedor = "google";
+          //console.log("Entrando a funcion entergoogle cadena: " + this.proveedor)
+          this.signIn();
+      },
+
+      enterface: function () {
+          this.proveedor = "facebook";
+          //console.log("Entrando a funcion enterfacebook cadena: " + this.proveedor)         
+          this.signIn();
+      },
+
+      signIn: function () {
+          //console.log("entrando a singIn dentro de na-login: " + this.proveedor);
+          this.logueado = true;
+        
+          this.fire('sign-in', null, { bubbles: false });
+          //console.log('Dentro de nut-login el usuario es: ' + this.$.auth.user)
+      },
+
+      abrirDrop: function () {
+          this.$.dropd.open();
+      },
+
+    });
+    </script>
+</dom-module>
